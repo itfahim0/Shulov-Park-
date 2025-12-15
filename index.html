@@ -11,31 +11,32 @@
 
 <body>
 
-    <div class="container nav-wrapper">
-        <a href="index.html" class="logo">
-            <img src="shulov_logo_transparent.png" alt="Shulov Park">
-        </a>
-
-        <div class="search-bar">
-            <i class="fas fa-search search-icon"></i>
-            <input type="text" placeholder="Search for fruits, vegetables, or daily essentials...">
-            <div class="search-dropdown"></div>
-        </div>
-
-        <div class="nav-actions">
-            <a href="account.html" class="nav-item">
-                <i class="fas fa-user-circle"></i>
-                <span>Account</span>
+    <header>
+        <div class="container nav-wrapper">
+            <a href="index.html" class="logo">
+                <img src="shulov_logo_transparent.png" alt="Shulov Park">
             </a>
-            <a href="cart.html" class="nav-item">
-                <div style="position: relative;">
-                    <i class="fas fa-shopping-basket"></i>
-                    <span class="cart-count">0</span>
-                </div>
-                <span>Cart</span>
-            </a>
+
+            <div class="search-bar">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" placeholder="Search for fruits, vegetables, or daily essentials...">
+                <div class="search-dropdown"></div>
+            </div>
+
+            <div class="nav-actions">
+                <a href="account.html" class="nav-item">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Account</span>
+                </a>
+                <a href="cart.html" class="nav-item">
+                    <div style="position: relative;">
+                        <i class="fas fa-shopping-basket"></i>
+                        <span class="cart-count">0</span>
+                    </div>
+                    <span>Cart</span>
+                </a>
+            </div>
         </div>
-    </div>
     </header>
 
     <main class="container">
@@ -130,6 +131,29 @@
             </div>
         </div>
     </footer>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-nav-bar">
+        <a href="index.html" class="mobile-nav-item active">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="mobile-nav-item" onclick="document.querySelector('.search-bar input').focus()">
+            <i class="fas fa-search"></i>
+            <span>Search</span>
+        </a>
+        <a href="cart.html" class="mobile-nav-item">
+            <div style="position: relative;">
+                <i class="fas fa-shopping-basket"></i>
+                <span class="cart-count" style="top: -5px; right: -5px;">0</span>
+            </div>
+            <span>Cart</span>
+        </a>
+        <a href="account.html" class="mobile-nav-item">
+            <i class="fas fa-user"></i>
+            <span>Account</span>
+        </a>
+    </nav>
 
     <script type="module" src="shulov.js"></script>
 </body>

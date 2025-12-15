@@ -132,6 +132,29 @@
         </div>
     </footer>
 
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-nav-bar">
+        <a href="index.html" class="mobile-nav-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="index.html" class="mobile-nav-item">
+            <i class="fas fa-search"></i>
+            <span>Search</span>
+        </a>
+        <a href="cart.html" class="mobile-nav-item active">
+            <div style="position: relative;">
+                <i class="fas fa-shopping-basket"></i>
+                <span class="cart-count" style="top: -5px; right: -5px;">0</span>
+            </div>
+            <span>Cart</span>
+        </a>
+        <a href="account.html" class="mobile-nav-item">
+            <i class="fas fa-user"></i>
+            <span>Account</span>
+        </a>
+    </nav>
+
     <script type="module">
         import { CartService } from './src/services/cart-service.js';
 
