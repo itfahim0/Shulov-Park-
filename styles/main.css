@@ -99,6 +99,10 @@ button {
     display: none !important;
 }
 
+.mobile-nav-bar {
+    display: none;
+}
+
 /* Header - Brand Color */
 header {
     background: var(--primary-dark);
@@ -1059,16 +1063,30 @@ footer {
         margin-top: 0.75rem;
     }
 
-    /* Footer Mobile */
+    /* Footer Mobile - Cleaner "Best Fit" */
     .footer-grid {
         grid-template-columns: 1fr;
-        gap: 2rem;
+        gap: 1.5rem;
         text-align: center;
+    }
+
+    /* Hide detailed links on mobile to save space */
+    .footer-col ul {
+        display: none;
+    }
+
+    .footer-col h4 {
+        margin-bottom: 0.25rem;
     }
 
     footer {
         padding-bottom: 5rem;
-        /* Add padding for bottom nav */
+        /* Padding for fixed bottom nav */
+    }
+
+    /* Ensure Mobile Nav is Visible */
+    .mobile-nav-bar {
+        display: flex !important;
     }
 
     .admin-layout {
