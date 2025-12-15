@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shulov Park - Admin Panel</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .admin-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        .admin-sidebar {
+            background: var(--secondary);
+            color: var(--white);
+            padding: 2rem 1rem;
+        }
+
+        .admin-header {
+            background: var(--white);
+            padding: 1rem 2rem;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-content {
+            background: #f3f4f6;
+            padding: 2rem;
+        }
+
+        .admin-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            border-radius: var(--radius-md);
+            transition: all 0.2s;
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-nav-item:hover,
+        .admin-nav-item.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .data-table th,
+        .data-table td {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .data-table th {
+            background: #f9fafb;
+            font-weight: 600;
+        }
+
+        /* Login Form */
+        .admin-login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-light);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Login Section -->
+    <div id="admin-login" class="admin-login-container">
+        <div class="auth-container" style="margin: 0;">
+            <div class="logo" style="justify-content: center; margin-bottom: 2rem;">
+                <img src="shulov_logo_transparent.png" alt="Shulov Park">
+            </div>
+            <h2 class="auth-title">Admin Login</h2>
+            <p class="auth-subtitle">Manage inventory and orders</p>
+
+            <form onsubmit="event.preventDefault(); handleAdminLogin();">
+                <div class="form-group" style="text-align: left;">
+                    <label class="form-label">Username</label>
+                    <input type="text" id="admin-user" class="form-input" required>
+                </div>
+                <div class="form-group" style="text-align: left;">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="admin-pass" class="form-input" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Login to Dashboard</button>
+            </form>
+            <p id="login-error" style="color: red; margin-top: 1rem; display: none;">Invalid credentials</p>
+        </div>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div id="admin-dashboard" class="admin-layout hidden">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="logo" style="margin-bottom: 3rem; padding-left: 1rem;">
+                <img src="shulov_logo_transparent.png" style="filter: brightness(0) invert(1);" alt="Shulov Logo">
+            </div>
+            <nav>
+                <div class="admin-nav-item active" onclick="showSection('products')">
+                    <i class="fas fa-box"></i> Products
+                </div>
+                <div class="admin-nav-item" onclick="showSection('categories')">
+                    <i class="fas fa-tags"></i> Categories
+                </div>
+                <div class="admin-nav-item" onclick="showSection('orders')">
+                    <i class="fas fa-shopping-bag"></i> Orders
+                </div>
+                <div class="admin-nav-item" onclick="showSection('daily-prices')">
+                    <i class="fas fa-calendar-alt"></i> Daily Prices
+                </div>
+                <div class="admin-nav-item" style="color: #fda4af; margin-top: auto;" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main>
+            <header class="admin-header">
+                <h2 id="page-title">Product Management</h2>
+                <div class="profile-header" style="margin: 0; gap: 1rem;">
+                    <span>Admin</span>
+                    <i class="fas fa-user-circle" style="font-size: 2rem; color: var(--text-light);"></i>
+                </div>
+            </header>
+
+            <div class="admin-content">
+                <!-- Products Section -->
+                <div id="section-products">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 2rem;">
+                        <div class="search-bar" style="margin: 0; max-width: 300px;">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" placeholder="Search products..."
+                                oninput="renderAdminProducts(this.value)">
+                        </div>
+                        <button class="btn btn-primary" onclick="openProductModal()">
+                            <i class="fas fa-plus"></i> Add Product
+                        </button>
+                    </div>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-products-table">
+                            <!-- JS populates -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Categories Section -->
+                <div id="section-categories" class="hidden">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 2rem;">
+                        <h3 style="margin: 0;">Manage Categories</h3>
+                        <button class="btn btn-primary" onclick="openCategoryModal()">
+                            <i class="fas fa-plus"></i> Add Category
+                        </button>
+                    </div>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Icon</th>
+                                <th>Name</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-categories-table">
+                            <!-- JS populates -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Orders Section -->
+                <div id="section-orders" class="hidden">
+                    <h3 style="margin-bottom: 1.5rem;">Recent Orders</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Total</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-orders-table">
+                            <!-- JS populates -->
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Daily Prices Section -->
+                <div id="section-daily-prices" class="hidden">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 2rem;">
+                        <h3 style="margin: 0;">Manage Daily Prices</h3>
+                        <button class="btn btn-primary" onclick="openDailyPriceModal()">
+                            <i class="fas fa-plus"></i> Add Item
+                        </button>
+                    </div>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Price</th>
+                                <th>Unit</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-daily-prices-table">
+                            <!-- JS populates -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Product Modal -->
+    <div id="product-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="modal-title" style="margin-bottom: 1.5rem;">Add New Product</h3>
+            <form onsubmit="event.preventDefault(); saveProduct();">
+                <input type="hidden" id="prod-id">
+                <div class="form-group">
+                    <label class="form-label">Product Name</label>
+                    <input id="prod-name" type="text" class="form-input" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Price</label>
+                        <input id="prod-price" type="number" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Original Price</label>
+                        <input id="prod-orig-price" type="number" class="form-input">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select id="prod-cat" class="form-select">
+                        <option>Fruits</option>
+                        <option>Vegetables</option>
+                        <option>Dairy & Eggs</option>
+                        <option>Staples</option>
+                        <option>Snacks</option>
+                        <option>Beverages</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Image URL</label>
+                    <input id="prod-img" type="text" class="form-input" placeholder="images/..." required>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="button" class="btn" onclick="closeProductModal()"
+                        style="flex:1; border: 1px solid var(--border);">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="flex:1;">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add/Edit Category Modal -->
+    <div id="category-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="cat-modal-title" style="margin-bottom: 1.5rem;">Add New Category</h3>
+            <form onsubmit="event.preventDefault(); saveCategory();">
+                <input type="hidden" id="cat-id"> <!-- Using name as ID usually, but we'll see -->
+                <div class="form-group">
+                    <label class="form-label">Category Name</label>
+                    <input id="cat-name" type="text" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Icon Class (FontAwesome)</label>
+                    <input id="cat-icon" type="text" class="form-input" placeholder="e.g. fa-carrot" required>
+                    <small style="color: grey;">Check FontAwesome for icon names</small>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="button" class="btn" onclick="closeCategoryModal()"
+                        style="flex:1; border: 1px solid var(--border);">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="flex:1;">Save Category</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    </div>
+
+    <!-- Add/Edit Daily Price Modal -->
+    <div id="daily-price-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="dp-modal-title" style="margin-bottom: 1.5rem;">Add Daily Price Item</h3>
+            <form onsubmit="event.preventDefault(); saveDailyPrice();">
+                <input type="hidden" id="dp-id">
+                <div class="form-group">
+                    <label class="form-label">Item Name</label>
+                    <input id="dp-name" type="text" class="form-input" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Price</label>
+                        <input id="dp-price" type="number" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Unit</label>
+                        <input id="dp-unit" type="text" class="form-input" placeholder="e.g. kg, pcs, dozen" required>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="button" class="btn" onclick="closeDailyPriceModal()"
+                        style="flex:1; border: 1px solid var(--border);">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="flex:1;">Save Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { AuthService } from './src/services/auth-service.js';
+        import { DataService } from './src/services/data-service.js';
+
+        // Check Auth
+        window.checkAdminAuth = () => {
+            // We use the service but getting the specific admin flag from local storage for sync check
+            // In a real app, AuthService.init() would drive this.
+            if (AuthService.isAdmin()) {
+                document.getElementById('admin-login').classList.add('hidden');
+                document.getElementById('admin-dashboard').classList.remove('hidden');
+                loadDashboardData();
+            }
+        };
+
+        window.handleAdminLogin = async () => {
+            const user = document.getElementById('admin-user').value;
+            const pass = document.getElementById('admin-pass').value;
+
+            try {
+                const result = await AuthService.login(user, pass);
+                if (result.isAdmin) {
+                    location.reload();
+                } else {
+                    document.getElementById('login-error').textContent = "Not an admin account";
+                    document.getElementById('login-error').style.display = 'block';
+                }
+            } catch (e) {
+                document.getElementById('login-error').style.display = 'block';
+            }
+        };
+
+        window.logout = async () => {
+            await AuthService.logout();
+            location.reload();
+        };
+
+        // UI Management
+        window.showSection = (section) => {
+            document.querySelectorAll('.admin-nav-item').forEach(el => el.classList.remove('active'));
+            const target = event.target.closest('.admin-nav-item');
+            if (target) target.classList.add('active');
+
+            document.getElementById('section-products').classList.add('hidden');
+            document.getElementById('section-categories').classList.add('hidden');
+            document.getElementById('section-orders').classList.add('hidden');
+            document.getElementById('section-daily-prices').classList.add('hidden');
+
+            document.getElementById('section-' + section).classList.remove('hidden');
+
+            const titles = {
+                'products': 'Product Management',
+                'categories': 'Category Management',
+                'orders': 'Order Management',
+                'daily-prices': 'Daily Price Management'
+            };
+            document.getElementById('page-title').textContent = titles[section];
+        };
+
+        // --- Data Loading ---
+        let products = [];
+        let categories = [];
+
+        window.loadDashboardData = () => {
+            // Load via Services
+            products = DataService.getProducts();
+            renderAdminProducts();
+
+            categories = DataService.getCategories();
+            renderAdminCategories();
+
+            // Orders still raw for now as we didn't make an OrderService yet
+            const orders = JSON.parse(localStorage.getItem('shulov_orders') || '[]');
+            renderAdminOrders(orders);
+
+            const dailyPrices = DataService.getDailyPrices();
+            renderAdminDailyPrices(dailyPrices);
+        };
+
+        // --- Product Functions ---
+        window.renderAdminProducts = (filter = '') => {
+            const tbody = document.getElementById('admin-products-table');
+            const filtered = products.filter(p => p.name.toLowerCase().includes(filter.toLowerCase()));
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: var(--text-light);">No products found</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(p => `
+                <tr>
+                    <td><img src="${p.image}" style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover;"></td>
+                    <td style="font-weight: 500;">${p.name}</td>
+                    <td><span style="font-size: 0.85rem; background: #e5e7eb; padding: 2px 8px; border-radius: 4px;">${p.category}</span></td>
+                    <td>৳${p.price}</td>
+                    <td>In Stock</td>
+                    <td>
+                        <button onclick="editProduct(${p.id})" style="color: var(--primary); border:none; background:none; margin-right: 0.5rem;"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteProduct(${p.id})" style="color: #ef4444; border:none; background:none;"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        };
+
+        window.openProductModal = (id = null) => {
+            const catSelect = document.getElementById('prod-cat');
+            catSelect.innerHTML = categories.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+
+            document.getElementById('product-modal').classList.add('active');
+            if (id) {
+                document.getElementById('modal-title').textContent = 'Edit Product';
+                const p = products.find(x => x.id === id);
+                document.getElementById('prod-id').value = p.id;
+                document.getElementById('prod-name').value = p.name;
+                document.getElementById('prod-price').value = p.price;
+                document.getElementById('prod-orig-price').value = p.originalPrice || '';
+                document.getElementById('prod-cat').value = p.category;
+                document.getElementById('prod-img').value = p.image;
+            } else {
+                document.getElementById('modal-title').textContent = 'Add New Product';
+                document.querySelector('#product-modal form').reset();
+                document.getElementById('prod-id').value = '';
+            }
+        };
+
+        window.closeProductModal = () => {
+            document.getElementById('product-modal').classList.remove('active');
+        };
+
+        window.editProduct = (id) => openProductModal(id);
+
+        window.saveProduct = () => {
+            const id = document.getElementById('prod-id').value;
+            const name = document.getElementById('prod-name').value;
+            const price = Number(document.getElementById('prod-price').value);
+            const origPrice = document.getElementById('prod-orig-price').value ? Number(document.getElementById('prod-orig-price').value) : null;
+            const category = document.getElementById('prod-cat').value;
+            const image = document.getElementById('prod-img').value;
+
+            const product = {
+                id: id ? Number(id) : null,
+                name,
+                price,
+                originalPrice: origPrice,
+                category,
+                image,
+                discount: origPrice ? "Discount" : null
+            };
+
+            DataService.saveProduct(product);
+            products = DataService.getProducts(); // Refresh local list
+            renderAdminProducts();
+            closeProductModal();
+            alert('Product Saved!');
+        };
+
+        window.deleteProduct = (id) => {
+            if (confirm('Delete this product?')) {
+                DataService.deleteProduct(id);
+                products = DataService.getProducts();
+                renderAdminProducts();
+            }
+        };
+
+        // --- Category Functions (Simplified for brevity, linking to localStorage direct for now or via DataService if we add methods) ---
+        // DataService currently lacks saveCategory, so we'll keep local logic or add it.
+        // For robustness, I'll add the UI logic locally as mapped to the existing arrays.
+
+        window.renderAdminCategories = () => {
+            const tbody = document.getElementById('admin-categories-table');
+            if (categories.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">No categories found</td></tr>';
+                return;
+            }
+            tbody.innerHTML = categories.map(c => `
+                 <tr>
+                     <td><i class="fas ${c.icon}" style="font-size: 1.2rem; color: var(--primary);"></i> <span style="font-size:0.8rem; color:#666;">(${c.icon})</span></td>
+                     <td style="font-weight: 500;">${c.name}</td>
+                     <td>
+                         <button onclick="editCategory('${c.name}')" style="color: var(--primary); border:none; background:none; margin-right: 0.5rem;"><i class="fas fa-edit"></i></button>
+                         <button onclick="deleteCategory('${c.name}')" style="color: #ef4444; border:none; background:none;"><i class="fas fa-trash"></i></button>
+                     </td>
+                 </tr>
+             `).join('');
+        };
+        // ... (Other category/order/daily price functions would follow similar pattern)
+        // For the sake of the user's immediate question "Add Products", the Product part is most critical.
+        // I will stub the rest to avoid massive file replacements if they aren't critical to the question, 
+        // OR I can just map them to the global scope if they were already there. 
+        // But wait, module scope isn't global. I MUST expose them.
+
+        window.openCategoryModal = (name = null) => {
+            document.getElementById('category-modal').classList.add('active');
+            // ... (Logic from original file)
+            if (name) {
+                document.getElementById('cat-modal-title').textContent = 'Edit Category';
+                const c = categories.find(x => x.name === name);
+                document.getElementById('cat-id').value = c.name;
+                document.getElementById('cat-name').value = c.name;
+                document.getElementById('cat-icon').value = c.icon.replace('fas ', '').replace('fa-', 'fa-');
+            } else {
+                document.getElementById('cat-modal-title').textContent = 'Add New Category';
+                document.getElementById('cat-id').value = '';
+                document.getElementById('cat-name').value = '';
+                document.getElementById('cat-icon').value = '';
+            }
+        };
+        window.closeCategoryModal = () => document.getElementById('category-modal').classList.remove('active');
+        window.editCategory = (name) => openCategoryModal(name);
+        window.saveCategory = () => {
+            // Implementation mapping to localStorage directly for now or extending DataService later
+            // For now, let's just do it here to ensure it works
+            const oldName = document.getElementById('cat-id').value;
+            const name = document.getElementById('cat-name').value;
+            let icon = document.getElementById('cat-icon').value;
+            if (!icon.startsWith('fa-')) icon = 'fa-' + icon;
+
+            if (oldName) {
+                const index = categories.findIndex(c => c.name === oldName);
+                if (index !== -1) categories[index] = { name, icon };
+            } else {
+                categories.push({ name, icon });
+            }
+            localStorage.setItem('shulov_categories', JSON.stringify(categories));
+            renderAdminCategories();
+            closeCategoryModal();
+        };
+        window.deleteCategory = (name) => {
+            if (confirm('Delete category?')) {
+                categories = categories.filter(c => c.name !== name);
+                localStorage.setItem('shulov_categories', JSON.stringify(categories));
+                renderAdminCategories();
+            }
+        };
+
+        // Orders
+        window.renderAdminOrders = (orders) => {
+            const tbody = document.getElementById('admin-orders-table');
+            if (orders.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No orders found</td></tr>';
+                return;
+            }
+            tbody.innerHTML = [...orders].reverse().map(order => `
+                 <tr>
+                     <td>#${order.id}</td>
+                     <td>${order.customer}</td>
+                     <td>${order.total}</td>
+                     <td>${order.date}</td>
+                     <td><span class="order-status status-${order.status.toLowerCase()}">${order.status}</span></td>
+                     <td>
+                         ${order.status === 'Processing' ?
+                    `<button onclick="markDelivered('${order.id}')" style="font-size: 0.8rem; color: var(--primary); border: 1px solid var(--primary); background: transparent; padding: 2px 6px; border-radius: 4px;">Mark Delivered</button>`
+                    : 'Done'}
+                     </td>
+                 </tr>
+             `).join('');
+        };
+        window.markDelivered = (orderId) => {
+            const orders = JSON.parse(localStorage.getItem('shulov_orders') || '[]');
+            const order = orders.find(o => o.id === orderId);
+            if (order) {
+                order.status = 'Delivered';
+                localStorage.setItem('shulov_orders', JSON.stringify(orders));
+                renderAdminOrders(orders); // Re-render
+            }
+        };
+
+        // Daily Prices
+        window.renderAdminDailyPrices = (dailyPrices) => {
+            const tbody = document.getElementById('admin-daily-prices-table');
+            if (!dailyPrices || dailyPrices.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No daily prices set</td></tr>';
+                return;
+            }
+            tbody.innerHTML = dailyPrices.map(item => `
+                <tr>
+                    <td style="font-weight: 500;">${item.name}</td>
+                    <td>৳${item.price}</td>
+                    <td>${item.unit}</td>
+                    <td>
+                        <button onclick="editDailyPrice(${item.id})" style="color: var(--primary); border:none; background:none; margin-right: 0.5rem;"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteDailyPrice(${item.id})" style="color: #ef4444; border:none; background:none;"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        };
+        window.openDailyPriceModal = (id = null) => {
+            document.getElementById('daily-price-modal').classList.add('active');
+            const dailyPrices = DataService.getDailyPrices();
+            if (id) {
+                document.getElementById('dp-modal-title').textContent = 'Edit Daily Price Item';
+                const item = dailyPrices.find(x => x.id === id);
+                document.getElementById('dp-id').value = item.id;
+                document.getElementById('dp-name').value = item.name;
+                document.getElementById('dp-price').value = item.price;
+                document.getElementById('dp-unit').value = item.unit;
+            } else {
+                document.getElementById('dp-modal-title').textContent = 'Add Daily Price Item';
+                document.getElementById('dp-id').value = '';
+                document.getElementById('dp-name').value = '';
+                document.getElementById('dp-price').value = '';
+                document.getElementById('dp-unit').value = '';
+            }
+        };
+        window.closeDailyPriceModal = () => document.getElementById('daily-price-modal').classList.remove('active');
+        window.editDailyPrice = (id) => openDailyPriceModal(id);
+        window.saveDailyPrice = () => {
+            const id = document.getElementById('dp-id').value;
+            const name = document.getElementById('dp-name').value;
+            const price = document.getElementById('dp-price').value;
+            const unit = document.getElementById('dp-unit').value;
+
+            let dailyPrices = DataService.getDailyPrices();
+
+            if (id) {
+                const index = dailyPrices.findIndex(x => x.id == id);
+                if (index !== -1) dailyPrices[index] = { ...dailyPrices[index], name, price, unit };
+            } else {
+                const newId = dailyPrices.length ? Math.max(...dailyPrices.map(p => p.id)) + 1 : 1;
+                dailyPrices.push({ id: newId, name, price, unit });
+            }
+            localStorage.setItem('shulov_daily_prices', JSON.stringify(dailyPrices));
+            renderAdminDailyPrices(dailyPrices);
+            closeDailyPriceModal();
+        };
+        window.deleteDailyPrice = (id) => {
+            if (confirm('Delete this item?')) {
+                let dailyPrices = DataService.getDailyPrices();
+                dailyPrices = dailyPrices.filter(x => x.id !== id);
+                localStorage.setItem('shulov_daily_prices', JSON.stringify(dailyPrices));
+                renderAdminDailyPrices(dailyPrices);
+            }
+        };
+
+        // Init
+        checkAdminAuth();
+    </script>
+</body>
+
+</html>

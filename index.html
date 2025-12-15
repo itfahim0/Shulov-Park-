@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shulov Park - Fresh Groceries Delivered</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="container nav-wrapper">
+        <a href="index.html" class="logo">
+            <img src="shulov_logo_transparent.png" alt="Shulov Park">
+        </a>
+
+        <div class="search-bar">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" placeholder="Search for fruits, vegetables, or daily essentials...">
+            <div class="search-dropdown"></div>
+        </div>
+
+        <div class="nav-actions">
+            <a href="account.html" class="nav-item">
+                <i class="fas fa-user-circle"></i>
+                <span>Account</span>
+            </a>
+            <a href="cart.html" class="nav-item">
+                <div style="position: relative;">
+                    <i class="fas fa-shopping-basket"></i>
+                    <span class="cart-count">0</span>
+                </div>
+                <span>Cart</span>
+            </a>
+        </div>
+    </div>
+    </header>
+
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <img src="shulov_hero.png" alt="Fresh Vegetables">
+            <div class="hero-overlay">
+                <div class="hero-content">
+
+                    <p>Experience the best quality organic produce and daily essentials delivered right to your
+                        doorstep.</p>
+                    <button class="btn btn-primary">Shop Now <i class="fas fa-arrow-right"
+                            style="margin-left: 8px;"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Daily Price Section -->
+        <section class="daily-prices-section" id="daily-prices-section" style="display: none;">
+            <div class="daily-prices-title">
+                <i class="fas fa-calendar-day" style="color: var(--primary);"></i> Daily Market Prices
+            </div>
+            <div class="daily-prices-scroll" id="daily-prices-container">
+                <!-- Populated by JS -->
+            </div>
+        </section>
+
+        <!-- Categories Section -->
+        <section class="categories">
+            <h2 class="section-title">Shop by Category</h2>
+            <div class="category-grid">
+                <!-- Javascript will populate this -->
+            </div>
+        </section>
+
+        <!-- Featured Products Section -->
+        <section class="products" id="products-section">
+            <div id="products-container">
+                <!-- Javascript will populate this with categorized grids -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Shulov Park</h4>
+                    <p style="opacity: 1; line-height: 1.6; color: rgba(255,255,255,0.9);">Your trusted partner for
+                        fresh, organic, and affordable
+                        groceries. Quality you can taste, prices you can trust.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Shop</a></li>
+                        <li><a href="#">Offers</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Customer Service</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Returns & Refunds</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact Us</h4>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt" style="margin-right: 8px;"></i> Dhaka, Bangladesh</li>
+                        <li><i class="fas fa-phone" style="margin-right: 8px;"></i> +880 1234 567890</li>
+                        <li><i class="fas fa-envelope" style="margin-right: 8px;"></i> support@shulov.com</li>
+                    </ul>
+
+                    <h4 style="margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1rem;">Accepted Payments</h4>
+                    <div class="payment-methods-footer">
+                        <span class="pm-tag">Bkash</span>
+                        <span class="pm-tag">Nagad</span>
+                        <span class="pm-tag">Rocket</span>
+                        <span class="pm-tag"><i class="fab fa-cc-visa"></i> Visa</span>
+                        <span class="pm-tag"><i class="fab fa-cc-mastercard"></i> Master</span>
+                        <span class="pm-tag"><i class="fab fa-cc-amex"></i> Amex</span>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2024 Shulov Park. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="shulov.js"></script>
+</body>
+
+</html>

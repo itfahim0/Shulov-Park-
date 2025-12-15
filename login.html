@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Shulov Park</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+    <header>
+        <div class="container nav-wrapper">
+            <a href="index.html" class="logo">
+                <img src="shulov_logo_transparent.png" alt="Shulov Park">
+            </a>
+            <div class="nav-actions">
+                <!-- Minimal Header for Auth Pages -->
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="auth-container"
+            style="max-width: 400px; margin: 4rem auto; background: var(--white); padding: 2rem; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);">
+            <h1 class="auth-title"
+                style="text-align: center; margin-bottom: 0.5rem; font-size: 1.75rem; color: var(--secondary);">Welcome
+                Back</h1>
+            <p class="auth-subtitle" style="text-align: center; color: var(--text-light); margin-bottom: 2rem;">Log in
+                to your Shulov Park account</p>
+
+            <button class="social-btn" onclick="alert('Google Login is not implemented yet!')"
+                style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.75rem; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--white); font-weight: 500; cursor: pointer; transition: 0.2s;">
+                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style="width: 20px;">
+                Continue with Google
+            </button>
+
+            <div class="divider"
+                style="display: flex; align-items: center; text-align: center; margin: 1.5rem 0; color: var(--text-light); font-size: 0.85rem;">
+                <span style="flex: 1; border-bottom: 1px solid var(--border);"></span>
+                <span style="padding: 0 10px;">OR</span>
+                <span style="flex: 1; border-bottom: 1px solid var(--border);"></span>
+            </div>
+
+            <form onsubmit="event.preventDefault(); handlePageLogin();">
+                <div class="form-group" style="text-align: left;">
+                    <label class="form-label">Email or Username</label>
+                    <input type="text" id="login-email" class="form-input" placeholder="e.g. name@email.com" required>
+                </div>
+                <div class="form-group" style="text-align: left;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <label class="form-label" style="margin-bottom: 0;">Password</label>
+                        <a href="#" style="font-size: 0.85rem; color: var(--primary);">Forgot?</a>
+                    </div>
+                    <input type="password" id="login-pass" class="form-input" placeholder="••••••••" required>
+                </div>
+
+                <div id="login-error" style="color: #ef4444; font-size: 0.9rem; margin-bottom: 1rem; display: none;">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-size: 1rem;">
+                    Log In
+                </button>
+            </form>
+
+            <div class="auth-footer"
+                style="text-align: center; margin-top: 2rem; font-size: 0.95rem; color: var(--text-light);">
+                Don't have an account? <a href="signup.html" style="color: var(--primary); font-weight: 600;">Sign
+                    Up</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="copyright">
+                &copy; 2024 Shulov Park. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { AuthService } from './src/services/auth-service.js';
+
+        window.handlePageLogin = async function () {
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-pass').value;
+            const errorEl = document.getElementById('login-error');
+            errorEl.style.display = 'none';
+
+            try {
+                const result = await AuthService.login(email, pass);
+                if (result) {
+                    // Redirect handled by AuthService usually? 
+                    // No, login returns user object. We handle redirect.
+                    // Check if admin
+                    if (result.isAdmin) {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'account.html';
+                    }
+                }
+            } catch (error) {
+                errorEl.textContent = error.message;
+                errorEl.style.display = 'block';
+            }
+        };
+    </script>
+
+</body>
+
+</html>

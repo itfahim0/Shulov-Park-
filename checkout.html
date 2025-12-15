@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Shulov Park</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <header>
+        <div class="container nav-wrapper">
+            <a href="index.html" class="logo">
+                <img src="shulov_logo_transparent.png" alt="Shulov Park">
+            </a>
+            <div class="nav-actions">
+                <a href="cart.html" style="color: var(--primary); font-weight: 600;">
+                    <i class="fas fa-arrow-left" style="margin-right: 5px;"></i> Back to Cart
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container" style="padding-top: 3rem; padding-bottom: 3rem;">
+        <h1 class="page-title">Checkout</h1>
+
+        <form onsubmit="event.preventDefault(); placeOrder(this);" class="checkout-grid">
+
+            <!-- Left: Billing Details -->
+            <div class="checkout-form">
+                <h3 style="margin-bottom: 1.5rem; font-size: 1.25rem;">Delivery Information</h3>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-input" id="input-name" placeholder="e.g. John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" class="form-input" id="input-phone" placeholder="e.g. 01700000000" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Street Address</label>
+                    <textarea class="form-textarea" id="input-address" rows="2" placeholder="House no, Road no, Area"
+                        required></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">City</label>
+                        <select class="form-select" id="input-city">
+                            <option value="Dhaka">Dhaka</option>
+                            <option value="Chittagong">Chittagong</option>
+                            <option value="Savar">Savar</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Area</label>
+                        <select class="form-select" id="input-area">
+                            <option value="Chapain">Chapain</option>
+                            <option value="Shahibag">Shahibag</option>
+                            <option value="Radio Colony">Radio Colony</option>
+                            <option value="CRP">CRP</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Order Notes (Optional)</label>
+                    <textarea class="form-textarea" id="input-notes" rows="2"
+                        placeholder="Any special instructions for delivery..."></textarea>
+                </div>
+
+                <h3 style="margin-bottom: 1.5rem; font-size: 1.25rem; margin-top: 2rem;">Payment Method</h3>
+                <div class="payment-methods">
+                    <label class="payment-option selected">
+                        <input type="radio" name="payment" id="pay-cod" value="cod" checked
+                            onclick="selectPayment('cod')">
+                        <i class="fas fa-money-bill-wave" style="color: var(--primary); font-size: 1.2rem;"></i>
+                        <div>
+                            <div style="font-weight: 600;">Cash on Delivery</div>
+                            <div style="font-size: 0.85rem; color: var(--text-light);">Pay in cash when you receive the
+                                order</div>
+                        </div>
+                    </label>
+
+                    <label class="payment-option">
+                        <input type="radio" name="payment" id="pay-bkash" value="bkash"
+                            onclick="selectPayment('bkash')">
+                        <img src="https://assets.stickpng.com/images/6216447cbe9c09c3167195d8.png" style="height: 24px;"
+                            alt="bKash">
+                        <div>
+                            <div style="font-weight: 600;">bKash / Nagad / Rocket</div>
+                            <div style="font-size: 0.85rem; color: var(--text-light);">Pay via mobile banking</div>
+                        </div>
+                    </label>
+                </div>
+
+            </div>
+
+            <!-- Right: Order Summary -->
+            <div class="cart-summary">
+                <h3 style="margin-bottom: 1.5rem; font-size: 1.25rem;">Your Order</h3>
+
+                <div id="order-items"
+                    style="max-height: 300px; overflow-y: auto; margin-bottom: 1rem; padding-right: 5px;">
+                    <!-- Populated by JS -->
+                </div>
+
+                <div class="summary-row"
+                    style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+                    <span>Subtotal</span>
+                    <span id="checkout-subtotal">৳0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Delivery Fee</span>
+                    <span id="checkout-delivery">৳0</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total Payable</span>
+                    <span id="checkout-total">৳0</span>
+                </div>
+
+                <button type="submit" class="btn btn-primary"
+                    style="width: 100%; margin-top: 1.5rem; font-size: 1.1rem; padding: 1rem;">
+                    Place Order <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+                </button>
+
+                <div
+                    style="margin-top: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; color: var(--text-light); font-size: 0.85rem;">
+                    <i class="fas fa-lock"></i> Secure Checkout
+                </div>
+            </div>
+
+        </form>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="copyright">
+                &copy; 2024 Shulov Park. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { CartService } from './src/services/cart-service.js';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            CartService.init();
+            renderCheckoutPage();
+
+            // Pre-fill user details if logged in
+            const user = JSON.parse(localStorage.getItem('shulov_user') || 'null');
+            if (user) {
+                if (document.getElementById('input-name')) document.getElementById('input-name').value = user.name || '';
+                if (document.getElementById('input-phone')) document.getElementById('input-phone').value = user.phone || '';
+                if (document.getElementById('input-address')) document.getElementById('input-address').value = user.address || '';
+            }
+
+            // Setup dynamic delivery fee & Area update
+            const citySelect = document.getElementById('input-city');
+            if (citySelect) {
+                citySelect.addEventListener('change', () => {
+                    updateAreaOptions();
+                    updateOrderSummary();
+                });
+            }
+            // Init
+            updateAreaOptions();
+            updateOrderSummary();
+        });
+
+        // Make functions global for inline HTML events
+        window.renderCheckoutPage = function () {
+            const container = document.getElementById('order-items');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const cart = CartService.getCart();
+            if (cart.length === 0) {
+                container.innerHTML = '<div>Your cart is empty</div>';
+                return;
+            }
+
+            cart.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'checkout-item';
+                div.innerHTML = `
+                    <div class="checkout-item-info">
+                        <img src="${item.image}" alt="${item.name}">
+                        <div>
+                            <div style="font-weight: 600; font-size: 0.9rem;">${item.name}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-light);">x${item.qty}</div>
+                        </div>
+                    </div>
+                    <div style="font-weight: 600; font-size: 0.9rem;">৳${item.price * item.qty}</div>
+                `;
+                container.appendChild(div);
+            });
+        };
+
+        window.calculateCurrentDeliveryFee = function () {
+            const city = document.getElementById('input-city').value;
+            const subtotal = CartService.getCartTotal();
+
+            if (city === 'Savar' || city === 'Chittagong') {
+                return 0;
+            } else {
+                const baseFee = 100;
+                return subtotal > 1000 ? (baseFee / 2) : baseFee;
+            }
+        };
+
+        window.updateOrderSummary = function () {
+            const subtotal = CartService.getCartTotal();
+            const fee = window.calculateCurrentDeliveryFee();
+            const total = subtotal + fee;
+
+            const subtotalEl = document.getElementById('checkout-subtotal');
+            const deliveryEl = document.getElementById('checkout-delivery');
+            const totalEl = document.getElementById('checkout-total');
+
+            if (subtotalEl) subtotalEl.textContent = '৳' + subtotal;
+            if (deliveryEl) deliveryEl.textContent = '৳' + fee;
+            if (totalEl) totalEl.textContent = '৳' + total;
+        };
+
+        window.selectPayment = function (method) {
+            document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('selected'));
+            const selected = document.querySelector(`input[value="${method}"]`).closest('.payment-option');
+            if (selected) selected.classList.add('selected');
+        }
+
+        window.placeOrder = function (form) {
+            const deliveryInfo = {
+                name: document.getElementById('input-name').value,
+                phone: document.getElementById('input-phone').value,
+                address: document.getElementById('input-address').value,
+                city: document.getElementById('input-city').value,
+                area: document.getElementById('input-area').value,
+                notes: document.getElementById('input-notes').value
+            };
+
+            const cart = CartService.getCart();
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+
+            const fee = window.calculateCurrentDeliveryFee();
+            const subtotal = CartService.getCartTotal();
+            const total = subtotal + fee;
+
+            const newOrder = {
+                id: '#ORD-' + Math.floor(1000 + Math.random() * 9000),
+                date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+                status: 'Processing',
+                items: cart,
+                total: total,
+                deliveryFee: fee,
+                deliveryInfo: deliveryInfo
+            };
+
+            // Save Order to History
+            const orders = JSON.parse(localStorage.getItem('shulov_orders') || '[]');
+            orders.unshift(newOrder);
+            localStorage.setItem('shulov_orders', JSON.stringify(orders));
+
+            // Save User Address
+            const currentUser = JSON.parse(localStorage.getItem('shulov_user') || '{}');
+            if (currentUser.name || currentUser.email) {
+                currentUser.address = deliveryInfo.address;
+                currentUser.phone = deliveryInfo.phone;
+                if (!currentUser.name) currentUser.name = deliveryInfo.name;
+                localStorage.setItem('shulov_user', JSON.stringify(currentUser));
+            }
+
+            // Clear Cart & Redirect
+            alert('Order Placed Successfully!');
+            CartService.clearCart();
+            window.location.href = 'account.html';
+        };
+
+        window.savarAreas = [
+            "Akran", "Aminbazar", "Anandapur", "Arapara", "Ashulia Bazar", "Baipail",
+            "Bishmile", "CRP", "Chapain", "DEPZ Area", "Genda (Bus Stand)", "Hemayetpur",
+            "Jahangirnagar University", "Nabinagar", "Pollibidyut", "Radio Colony", "Savar Bazar", "Savar Bus Stand",
+            "Shimultola", "Thana Stand", "Zirabo"
+        ];
+
+        window.dhakaAreas = [
+            "Abdullahpur", "Adabor", "Agargaon", "Azimpur", "Badda", "Banani", "Bashundhara R/A",
+            "Dhanmondi", "Farmgate", "Gulshan-1", "Gulshan-2", "Mirpur-1", "Mirpur-10", "Mirpur-12",
+            "Mohammadpur", "Motijheel", "New Market", "Pallabi", "Rampura", "Shahbag", "Shyamoli",
+            "Tejgaon", "Uttara"
+        ];
+
+        window.chittagongAreas = [
+            "Agrabad", "GEC Circle", "Halishahar", "Khulshi", "Muradpur", "Nasirabad", "Panchlaish"
+        ];
+
+        window.updateAreaOptions = function () {
+            const city = document.getElementById('input-city').value;
+            const areaSelect = document.getElementById('input-area');
+            if (!areaSelect) return;
+
+            areaSelect.innerHTML = '';
+            let areas = [];
+            if (city === 'Savar') areas = window.savarAreas;
+            else if (city === 'Dhaka') areas = window.dhakaAreas;
+            else if (city === 'Chittagong') areas = window.chittagongAreas;
+            else areas = ["General Area"];
+
+            const uniqueAreas = [...new Set(areas)].sort();
+            uniqueAreas.forEach(area => {
+                const opt = document.createElement('option');
+                opt.value = area;
+                opt.textContent = area;
+                areaSelect.appendChild(opt);
+            });
+        };
+    </script>
+</body>
+
+</html>
